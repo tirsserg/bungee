@@ -1,0 +1,33 @@
+ SELECT
+  DATE_TRUNC('day', block_time) AS day,
+  COUNT(*) AS txs
+FROM (
+  SELECT block_time, "to" FROM ethereum.transactions
+  UNION ALL
+  SELECT block_time, "to" FROM polygon.transactions
+  UNION ALL
+  SELECT block_time, "to" FROM bnb.transactions
+  UNION ALL
+  SELECT block_time, "to" FROM avalanche_c.transactions
+  UNION ALL
+  SELECT block_time, "to" FROM fantom.transactions
+  UNION ALL
+  SELECT block_time, "to" FROM arbitrum.transactions
+  UNION ALL
+  SELECT block_time, "to" FROM optimism.transactions
+) AS transactions
+WHERE
+  "to" IN (
+    0xc0E02AA55d10e38855e13B64A8E1387A04681A00,
+    0x3a23F943181408EAC424116Af7b7790c94Cb97a5,
+    0x2b42AFFD4b7C14d9B7C2579229495c052672Ccd3,
+    0x040993fbF458b95871Cd2D73Ee2E09F4AF6d56bB,
+    0xBE51D38547992293c89CC589105784ab60b004A9,
+    0xb584D4bE1A5470CA1a8778E9B86c81e165204599,
+    0x5800249621DA520aDFdCa16da20d8A5Fc0f814d8,
+    0xAC313d7491910516E06FBfC2A0b5BB49bb072D91,
+    0xaDdE7028e7ec226777e5dea5D53F6457C21ec7D6
+  )
+  AND block_time > TRY_CAST('2023-01-01' AS TIMESTAMP)
+GROUP BY
+  1
